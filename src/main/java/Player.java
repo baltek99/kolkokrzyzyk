@@ -15,6 +15,10 @@ public class Player {
         return name;
     }
 
+    public boolean makeMove(Field field, int index) {
+        return field.insertMove(index, state);
+    }
+
     @Override
     public String toString() {
         return "Player " + name;

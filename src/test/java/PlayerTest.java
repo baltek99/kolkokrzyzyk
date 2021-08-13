@@ -25,4 +25,12 @@ class PlayerTest {
         assertEquals("Player Koala", player.toString());
         assertNotEquals("Player K", player.toString());
     }
+
+    @Test
+    void makeMove() {
+        Field field = new Field(3);
+        Player p1 = new Player(State.X, "Gracz");
+        p1.makeMove(field,1);
+        assertEquals(State.X, field.getField()[0][0]);
+    }
 }

@@ -9,7 +9,17 @@ public class Field {
                 field[i][j] = State.EMPTY;
             }
         }
-        howManyToWin = n;
+        howManyToWin = n <= 5 ? n : 5;
+        //howManyToWin = n;
+    }
+
+    public boolean isFull() {
+        for (int i = 0; i < field.length; i++) {
+            for (int j = 0; j < field[i].length; j++) {
+                if (field[i][j] == State.EMPTY) return false;
+            }
+        }
+        return true;
     }
 
     public State[][] getField() {
@@ -69,53 +79,76 @@ public class Field {
     public boolean isValidMove(int index) {
         index--;
         int n = field.length;
-        if (index < 0 || index >= n*n) return false;
-        if (field[index/n][index%n] == State.EMPTY) return true;
+        if (index < 0 || index >= n * n) return false;
+        if (field[index / n][index % n] == State.EMPTY) return true;
         else return false;
     }
 
-    public void insertMove(int index, State state) {
+    public boolean insertMove(int index, State state) {
         int n = field.length;
         if (isValidMove(index)) {
             index--;
-            field[index/n][index%n] = state;
-        }
-        else {
+            field[index / n][index % n] = state;
+            return true;
+        } else {
             System.out.println("Nieprawidłowy ruch\n");
+            return false;
         }
     }
+
     public boolean isWin() {
         return checkColumns() || checkRows() || checkDiagonals();
     }
 
     private boolean checkDiagonals() {
-        int counter = 1;
-        int counter2 = 1;
-        State prev1 = field[0][0];
-        State prev2 = field[0][field.length-1];
-        for (int i = 1; i < field.length; i++) {
-            if (field[i][i] == prev1 && field[i][i] != State.EMPTY) {
-                counter++;
-            }
-            if (field[i][field.length-i-1] == prev2 && field[i][field.length-i-1] != State.EMPTY) {
-                counter2++;
+        for (int p = 0; p < 2 * field.length; p++) {
+            if (Math.min(p + 1, field.length) - Math.max(0, p - field.length + 1) >= howManyToWin) {
+                int counter = 1;
+                for (int q = Math.max(0, p - field.length + 1); q < Math.min(p + 1, field.length) - 1; q++) {
+                    int x = q, y = p - q;
+                    if (field[x][y] == field[x + 1][y - 1]) {
+                        counter++;
+                    } else
+                        counter = 1;
+                    if (counter == howManyToWin)
+                        return true;
+                }
             }
         }
-        if (counter == howManyToWin || counter2 == howManyToWin) return true;
+
+        //backward diagonal
+        for (int p = 0; p < 2 * field.length; p++) {
+            if (Math.min(p + 1, field.length) - Math.max(0, p - field.length + 1) >= 5) {
+                int counter = 1;
+                for (int q = Math.max(0, p - field.length + 1); q < Math.min(p + 1, field.length) - 1; q++) {
+                    int x = field.length - 1 - q, y = p - q;
+                    if (field[x][y] == field[x - 1][y - 1]) {
+                        counter++;
+                    } else
+                        counter = 1;
+                    if (counter == howManyToWin) {
+                        return true;
+                    }
+                }
+            }
+        }
+
         return false;
     }
 
     private boolean checkColumns() {
-        int counter =1;
+        int counter = 1;
         for (int i = 0; i < field.length; i++) {
             State prev = field[0][i];
             for (int j = 1; j < field[i].length; j++) {
                 if (field[j][i] == prev && field[j][i] != State.EMPTY) {
                     counter++;
-                }
+                } else
+                    counter = 1;
+
+                if (counter == howManyToWin) return true;
+                prev = field[j][i];
             }
-            if (counter == howManyToWin) return true;
-            else counter = 1;
         }
         return false;
     }
@@ -127,10 +160,12 @@ public class Field {
             for (int j = 1; j < field[i].length; j++) {
                 if (field[i][j] == prev && field[i][j] != State.EMPTY) {
                     counter++;
-                }
+                } else
+                    counter = 1;
+
+                if (counter == howManyToWin) return true;
+                prev = field[i][j];
             }
-            if (counter == howManyToWin) return true;
-            else counter = 1;
         }
         return false;
     }
