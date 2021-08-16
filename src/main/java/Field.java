@@ -106,7 +106,7 @@ public class Field {
                 int counter = 1;
                 for (int q = Math.max(0, p - field.length + 1); q < Math.min(p + 1, field.length) - 1; q++) {
                     int x = q, y = p - q;
-                    if (field[x][y] == field[x + 1][y - 1]) {
+                    if (field[x][y] == field[x + 1][y - 1] && field[x][y] != State.EMPTY) {
                         counter++;
                     } else
                         counter = 1;
@@ -118,11 +118,11 @@ public class Field {
 
         //backward diagonal
         for (int p = 0; p < 2 * field.length; p++) {
-            if (Math.min(p + 1, field.length) - Math.max(0, p - field.length + 1) >= 5) {
+            if (Math.min(p + 1, field.length) - Math.max(0, p - field.length + 1) >= howManyToWin) {
                 int counter = 1;
                 for (int q = Math.max(0, p - field.length + 1); q < Math.min(p + 1, field.length) - 1; q++) {
                     int x = field.length - 1 - q, y = p - q;
-                    if (field[x][y] == field[x - 1][y - 1]) {
+                    if (field[x][y] == field[x - 1][y - 1] && field[x][y] != State.EMPTY) {
                         counter++;
                     } else
                         counter = 1;
